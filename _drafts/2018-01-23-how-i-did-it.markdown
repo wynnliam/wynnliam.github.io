@@ -98,4 +98,24 @@ Credit to Wikipedia. For more information, go [here](https://en.wikipedia.org/wi
 
 The next piece of data used is the age of crust. This primarily applies to oceanic crust, as you will see. Before we get into the age of crust, we need to have a bit of background on Plate Tectonics.
 
-# TODO: Finish me!
+If you're not familiar with the theory of Plate Tectonics, it goes something like this: The entire lithosphere (where all the crust is) is divided into some number of giant sections. We call these sections plates. These plates shift around and collide, causing earthquakes, volcanoes, mountains, and just about everything. For more information, go [here](https://en.wikipedia.org/wiki/Plate_tectonics)
+
+Here is a neat graphic of the plates:
+
+![Plates]({{"/assests/hidi_1_26_2018/plates.gif" | absolute_url}})
+
+Plates range in sizes, and different things happen depending on their interactions. The interesting stuff happens at the edges of plates. There are three different kinds of collisions, but only two interest me: convergent and divergent boundaries.
+
+In convergent ones, plates collide into each other. If continental crust smashes each other, we get mountains. If oceanic crust hits continental, the continental overlaps the oceanic and we get mountains. If oceanic hits oceanic, one of the plates sinks under the other in a process called Subduction. In this case, island chains and volcanoes will form.
+
+In divergent boundaries, plates move away from each other. This creates literal openings in the lithosphere where new crust forms.
+
+The key take away is that the age of crust is more-or-less a function of distance to a divergent boundary. Compare the above image to this one, and you will see this to be the case:
+
+![Crust-Age]({{"/assests/hidi_1_26_2018/age_oceanic_lith.jpg" | absolute_url}})
+
+This doesn't quite hold for continental crust, but for the sake of a simpler model, I made it so.
+
+# Combining the Metadata
+
+At this point, we have two variables that can tell us whether a point is continental or not: the moho discontinuity, and the age of crust. Essentially, the older crust is, the more likely it is continental crust. The deeper the depth, the more likely it is continental crust. Thus, we can plot these on an axis from 0 to 1 (or 0 to 100, or -100 to 100, whatever you like), where 0 is the youngest crust or the shallowest moho depth, and 1 is the oldest crust and the deepest moho depth. Now, imagine for each point P, we store a 2D vector (a, m), where a is the age, and m is the moho depth for P. Essentially, if this point is (1, 1) it is absolutely continental, and if it is (0, 0), it is absolutely oceanic. In other words, we could simply look at the magnitude of each vector, and the points with the largest magnitudes are continental, and the lowest are oceanic.
