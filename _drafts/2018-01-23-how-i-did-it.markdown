@@ -119,3 +119,26 @@ This doesn't quite hold for continental crust, but for the sake of a simpler mod
 # Combining the Metadata
 
 At this point, we have two variables that can tell us whether a point is continental or not: the moho discontinuity, and the age of crust. Essentially, the older crust is, the more likely it is continental crust. The deeper the depth, the more likely it is continental crust. Thus, we can plot these on an axis from 0 to 1 (or 0 to 100, or -100 to 100, whatever you like), where 0 is the youngest crust or the shallowest moho depth, and 1 is the oldest crust and the deepest moho depth. Now, imagine for each point P, we store a 2D vector (a, m), where a is the age, and m is the moho depth for P. Essentially, if this point is (1, 1) it is absolutely continental, and if it is (0, 0), it is absolutely oceanic. In other words, we could simply look at the magnitude of each vector, and the points with the largest magnitudes are continental, and the lowest are oceanic.
+
+# Implementation
+
+We can represent each property as an array of values from 0 to 1. I call these Planet Maps. In terms of its practical implementation, it's just an array. Thus, the Lithosphere just holds each Planet Map.
+
+Since each Planet Map uses a different algorithm for generation, we can create an object hierarchy to represent each generator. Thus our lithosphere generator just takes three map generators. The cool thing about this is that we can interchange different algorithms and experiment with them.
+
+Now wait a minute, I mentioned that I have three generators to create planet maps, but we only need two of them? Actually, we do need three maps. This was the result of some experimentation. Essentially, we have our age map, and the moho distance map (which I call the thickness map), and then an extra detail map.
+
+I will now cover in detail the different map generating systems.
+
+# Generating a Tectonics Map
+
+Hang on, what is a tectonics map? Well, I used to have the age map. Essentially, it would store the distance from the boundary for every point in the plate. The closer to the plate boundary, the younger the crust. When I used this, I found the resulting maps had these strange circular seas form. This would be fine if you want like very alien worlds, but was unsuitable for my needs.
+
+I thus decided the Age Map should be a general map to represent tectonic activity. In addition to age, it would contain data for collisions, plate density, and any thing else we want. Ultimately, I just picked a random value for every plate, and gave every point apart of that plate this value. Here's an example output of this map
+with 20 plates.
+
+![Plates]({{"/assests/hidi_1_26_2018/tectonics_example.png" | absolute_url}})
+
+So you see, each point has the random value assigned to its plate. This would be great for just say a plate density map. However, I found this alone
+outputs very aesthetic worlds. One thing I'd be interested in exploring is generate a plate map with a series of sub maps. Also, the cool thing about the
+tectonic generator is that I can specify the number of plates. Here's a world with 60 maps.
