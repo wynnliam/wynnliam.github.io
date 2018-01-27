@@ -142,3 +142,33 @@ with 20 plates.
 So you see, each point has the random value assigned to its plate. This would be great for just say a plate density map. However, I found this alone
 outputs very aesthetic worlds. One thing I'd be interested in exploring is generate a plate map with a series of sub maps. Also, the cool thing about the
 tectonic generator is that I can specify the number of plates. Here's a world with 60 maps.
+
+![Plates]({{"/assests/hidi_1_26_2018/tectonics_50_plates.png" | absolute_url}})
+
+As a side note, the tectonic plates wrap around the edges of the map. That means, the edges are in fact adjacent to each other. If I step off the top edge of
+the map, I come out of the bottom, and vice-versa. The same principle applies to the left and right edges as well.
+
+# Generating a Crust Thickness and Detail Map
+
+The next two maps used a simple Perlin noise generating algorithm. In fact, they used the one I mentioned above. So it's not really Perlin noise, as the
+algorithm states. There really isn't too much to say here about this. Here are some perlin noise maps to demonstrate what they look like:
+
+![Perlin-Example-1]({{"/assests/hidi_1_26_2018/perlin_1.png" | absolute_url}})
+
+This one is not-perlin noise at 8 octaves and a persistence of 0.5f.
+
+![Perlin-Example-2]({{"assests/hidi_1_26_2018/perlin_2.png" | absolute_url}})
+
+This one uses 8 octaves and a persistence of 0.75f. As you can see, it's very easy to tune your parameters to get very interesting results.
+
+# Combinining the Maps
+
+At this point, you have your three maps. Now comes the last and rather trivial part. The first step is for each point, take its thickness, tectonics activity,
+and detail data, treat these as components to a vector, and take the magnitude of this vector. Then, normalize each magnitude of every point such that
+it is a value from 0 to 1. Then sort these points. The first n points are ocean, the next m points are land, and the remaining points become mountainous.
+One thing to note, however, is that you need to make sure every point is clamped such that only ocean points have the ocean height range, the land
+points the land height range, and the mountains the mountain height range. This way, your height map will accurately reflect the types of crust they
+actually are.
+
+I hope this gave some good insight into how Lithosphere generation was done. Feel free to download the code over on the Projects page and see all of
+this for yourself!
