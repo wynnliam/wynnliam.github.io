@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "How I Did It: Generating a Height Map in Ulysses"
-date: 2018-01-23 17:29:00 +0000
+date: 2018-01-25 19:59:00 +0000
 categories: ulysses how-to
 ---
 
