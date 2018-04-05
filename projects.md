@@ -8,6 +8,13 @@ These are some of the projects I've worked on over the past few months. While th
 more on my github page, these are my most important ones. To see the rest of my work, go
 [here]({{ "https://github.com/wynnliam" | absolute_url }})
 
+# An Engine of Ice and Fire
+An Engine of Ice and Fire (AEOIAF) is a near fully-functioning tile based 2D top down game
+engine written in C++. It features an rich actor system, a game state manager, basic texture
+rendering, AI, and a working weapon system. I developed it over the course of about two years.
+
+Click [here]({{ "https://github.com/wynnliam/an_engine_of_ice_and_fire" | absolute_url }}) to get it.
+
 # Ulysses
 Ulysses is an on-going project of mine. At the moment, it is an experiment in procedural
 terrain generation. In the future, I would like to add more world-building elements to give
@@ -33,4 +40,4 @@ Further, the grammar I use describes a regular language. In fact, the number of 
 accepts is six. Thus, this program could easily done with an if-statement. However, I used
 a recursive function to practice iteration in a functional paradigm.
 
-Click [here]({{"https://github.com/wynnliam/blazonry_parser" | absolute_url }})
+Click [here]({{"https://github.com/wynnliam/blazonry_parser" | absolute_url }}) to get it.
