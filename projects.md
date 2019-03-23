@@ -8,26 +8,24 @@ These are some of the projects I've worked on over the past few months. While th
 more on my github page, these are my most important ones. To see the rest of my work, go
 [here]({{ "https://github.com/wynnliam" | absolute_url }})
 
+# Raycaster
+For my Full Stack Web Development final project, I implemented a ray caster based renderer
+for pseudo-3D environments. It was entirely front-end. It render both indoor and outdoor
+environments, including textures floors, ceilings, and walls. Also, it supports sprite
+rendering, so levels can have props and other objects in them. In addition, you can have
+rendered sky textures. After I completed the class, I designed a simple level file parser
+so you can load levels from file and render them.
+
+Click [here]({{ "https://web.cecs.pdx.edu/~wynnliam" | absolute_url }}) to see it in action.
+
+Click [here]({{ "https://github.com/wynnliam/CS410p_Raycaster" }}) to see the source code.
+
 # An Engine of Ice and Fire
 An Engine of Ice and Fire (AEOIAF) is a near fully-functioning tile based 2D top down game
 engine written in C++. It features an rich actor system, a game state manager, basic texture
 rendering, AI, and a working weapon system. I developed it over the course of about two years.
 
 Click [here]({{ "https://github.com/wynnliam/an_engine_of_ice_and_fire" | absolute_url }}) to get it.
-
-# Ulysses
-Ulysses is an on-going project of mine. At the moment, it is an experiment in procedural
-terrain generation. In the future, I would like to add more world-building elements to give
-it some depth. Part of the goal of this project is to produce worlds that are to some capacity
-scientifically plausable, while also using relatively efficient algorithms.
-
-For now, all it does is produce an image of a randomly generated world. Specifically, it
-generates a colorized height map of a world. It does so by creating a series of maps that
-specify different features of the world, and then combines these maps. Specifically, it
-generates three maps: a tectonics map, crust thickness map, and an orogenic map. It then
-combines these to produce a final height map of the world.
-
-Click [here]({{ "https://github.com/wynnliam/ulysses" | absolute_url }}) to get it.
 
 # Blazonry Parser
 The Blazonry Parser is an experiment in language theory and functional programming.
