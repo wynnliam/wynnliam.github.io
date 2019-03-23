@@ -1,6 +1,9 @@
-# Implementing a Wolfenstein 3D Style Ray Casting System
-## Part 1: The Basic Theory
-### 2/4/2019 (TODO: Set to the appropriate date!)
+---
+layout: post
+title: "Implementing a Ray Caster Part 1: Basic Wall Rendering"
+date: 2019-03-23 4:00:00 +0000
+categories: raycaster news tutorial
+---
 
 Hey all! This is a long overdue series, but I'm finally getting around
 to it. I will be detailing my implementation of the ray casting algorithm
