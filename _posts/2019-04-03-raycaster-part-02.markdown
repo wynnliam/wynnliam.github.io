@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Implementing a Ray Caster Part 2: Sprite Rendering"
-date: 2019-04-02 14:41:00 +0000
+date: 2019-04-03 13:13:00 +0000
 categories: raycaster news tutorial
 --- 
 
