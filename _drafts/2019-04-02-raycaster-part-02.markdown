@@ -314,3 +314,35 @@ is:
 
 * projected\_sprite\_height = 277 * 64 / distance\_to\_sprite
 * projected\_sprite\_width = projection\_plane\_height
+
+### Section 5: Notes about rendering and Conclusion
+At this point, you know the where to render the sprite to the screen and the scale
+of it. The only thing that remains is the actually drawing it. I won't go into too
+much detail here like the other sections, but just a few remarks.
+
+Essentially, you need to render the sprite as a series of columns, not unlike walls.
+Since you know the location of the center of the sprite on screen and its scale, computing
+where each column of the sprite on the screen is, and what part of the sprite to render
+isn't too bad. I would look at my code to see how that's done.
+
+More importantly, we want to make sure we only render columns of sprites not obscured by walls.
+Essentially for each column of screen pixels, you want to keep track of two things:
+
+* Did the ray associated with this column of pixels hit a wall?
+* If it did, what was the distance
+
+Then, when you wish to render a column of sprite pixels, you do so under two circumstances:
+
+* Did the ray of this column actually hit a wall? If not, we can render our sprite column.
+* If it did hit a wall, we render the sprite column only if this distance to the sprite
+is less than the wall.
+
+At this point, you shoud have all of the theoretical background required to do "sprite casting",
+as its coloquially called sometimes. If this high level explanation was not enough, I would
+check out my code, and some of the other sources I have below. In the next article, we'll
+detail floor, ceiling, and sky casting. Thank you for reading!
+
+* [My implementation](https://github.com/wynnliam/CS410p_Raycaster/)
+* [David Layne's Post on Sprite Casting](https://www.allegro.cc/forums/thread/355015)
+* [Lode Vandevenne's Post](https://lodev.org/cgtutor/raycasting3.html)
+
