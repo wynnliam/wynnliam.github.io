@@ -88,7 +88,7 @@ walls and sprites in the world:
 * As I detailed in the last post: *everything* is 64 pixels by 64 pixels in dimensions
 * Everything is vertically fixed as I will explain below
 
-The first point isn't knew, but coupling it with the second point is huge. When I say that
+The first point isn't new, but coupling it with the second point is huge. When I say that
 everything is vertically fixed/centered, I mean the following graphic:
 
 
@@ -98,10 +98,15 @@ So the player is 32 pixels in height, but everything else is 64 pixels in height
 everything is vertically fixed/centered. That is, no matter where anything in the world is,
 be it sprites or walls or what have you, it means that y coordinate of the center of everything
 is half of the projection plane's height. Since my implementation assumes the projection plane
-has a height of 200, then the y coordinate of the center of everything is 100.
+has a height of 200, then the y coordinate of the center of everything on the screen is 100.
 
 This means right off the bat, we already have the y coodinate of sprite's screen position. All
 that remains to find is the x coordinate of the center of the sprite.
+
+And let me emphasize this: the y coordinate of the center of everything is 100 *only on the screen*.
+This is *not* the case for world coordinates. This was something that threw me for a loop when
+I first started working on this. You have to remember that y in the world isn't the same as y
+on the screen, since the screen is a 2D plane and the world is 3d-ish.
 
 This is a much trickier problem, since we don't have an obvious way to relate a sprite's world position
 to the screen. We could do something similar to walls. For each column of pixels in our screen, fire a ray,
@@ -146,9 +151,18 @@ Also, since our y axis is flipped, we need to negate this. Thus:
 
 p = atan2(-h.y, h.x)
 
-And finally, since we are dealing in degrees, our resulting angle will be:
+Then, since we are dealing in degrees, our resulting angle will be:
 
 p = atan2(-h.y, h.x) * (180 / PI)
+
+Finally, like all angles, we want to make sure this is between 0 and 360, so:
+
+```
+if p < 0:
+	p += 360
+if p > 360:
+	p -= 360
+```
 
 So great, Liam. You made everyone solve for this angle p, but what was the point?
 Recall that there is a relationship between columns of pixels and ray angles. If our
@@ -166,4 +180,137 @@ Not quite. Let's draw h, p, and the player's field of view in one graphic:
 
 ![Figure]({{"/assests/raycaster_implementation/part_2/09.jpg" | absolute_url}})
 
-TODO: Finish me!
+The black line is the x axis, h and p are in red, and the blue lines represent the max and min angles
+of the player's field of view.
+
+Notice that I included a new angle q, in purple. What is q? This angle is the difference between
+the leftmost angle of the player's field of view and p. Since we know the player's rotation, and
+his field of view, we can calculte the leftmost angle of the field of view as follows:
+
+player\_rotation + (fov / 2)
+
+And this angle represents the angle corresponding to the leftmost column of pixels on the screen.
+Suppose the player's field of view is 60, then there are 60 / 2 = 30 degrees of view to the left
+and right of the player's rotation. I think a graphic is quite instructive here:
+
+
+![Figure]({{"/assests/raycaster_implementation/part_2/10.jpg" | absolute_url}})
+
+Where the red line is the player's rotation. The field of view is 60, and thus there are 30 degrees
+of view to the left and right of the player. Note that the picture implies the player's rotation is
+90 degrees. This is for the sake of the graphic. This relationship holds regardless of the player's
+rotation.
+
+So anyways, why does knowing the leftmost angle of the field of view do for us? Well let's draw
+the player's field of view but with the angle p included:
+
+
+![Figure]({{"/assests/raycaster_implementation/part_2/11.jpg" | absolute_url}})
+
+Also included is the angle q. Recall that p is the angle between the player and the sprite we want
+to render. Now, if the leftmost angle of the field of view corresponds to column 0 of the projection
+plane, then q is the angle that corresponds to another column of pixels on the screen. In other words,
+q is the angle that connotes the x coordinate of the sprite's center on the screen. If we use
+our conversion factor from earlier, we can transform q into a column of pixels:
+
+sprite\_screen.x = q * (proj\_plane\_width / field\_of\_view) = q * (320 / 60)
+
+There's still a problem here: how do we compute q? There are some corner cases that make this harder
+than one would think, so I'll now spend some time discussing this. For the most part, we compute
+q with the following computation:
+
+q = player\_rot + (fov / 2) - p
+
+The player\_rot + (fov / 2) gives us the leftmost angle of the entire field of view. Then subtracting
+p gives us the difference. However, suppose we have the following scenario:
+
+![Figure]({{"/assests/raycaster_implementation/part_2/12.jpg" | absolute_url}})
+
+Where the red arrow is the player's rotation, the two blue arrows represent the player's field of view,
+and the purple line is the vector h. This implies p is in quadrant 4, but the player's rotation is in quadrant 1.
+If we compute q above, we would get something like the following:
+
+q = \[Angle between 0 and 90\] - \[angle between 270 and 360\]
+
+Which means q will be negative. As such, we need to add 360 after computing q to get the correct angle. Thus:
+
+```
+q = player\_rot + (fov / 2) - p
+
+if player rot in quadrant 1 and p in quadrant 4:
+	q += 360
+```
+
+Now on the other hand, suppose we've this scenario:
+
+![Figure]({{"/assests/raycaster_implementation/part_2/13.jpg" | absolute_url}})
+
+Then we have the opposite case, that is:
+
+q = \[angle between 270 and 360\] - \[angle between 0 and 90\]
+
+Which means that we need to subtract 360. Thus:
+
+```
+q = player\_rot + (fov / 2) - p
+
+if player rot in quadrant 4 and p in quadrant 1:
+	q += 360
+```
+
+And with that, we've got all the pieces to find the screen coordinates of the center of the sprite!
+Let's go ahead and put it all together. I'll write it as psuedo-code since we need to do if statements
+for the proper computation
+
+```
+h.x = sprite.x - player.x
+h.y = sprite.y - player.y
+
+p = atan2(-h.y / h.x) * (180 / PI)
+
+if p > 360:
+	p -= 360
+if p < 0:
+	p += 360
+
+q = player_rot + (fov / 2) - p
+
+if player_rot in quadrant 1 and p in quadrant 4:
+	q += 360
+if player_rot in quadrant 4 and p in quadrant 1:
+	q -= 360
+
+sprite_screen.x = q * (projection_plane_width / fov)
+sprite_screen.y = 100 (projection_plane_height / 2 = 200 / 2 = 100)
+```
+
+### Section 4: Determine the Sprite Scale
+We now have the sprite's position on the screen. The last thing we need to do is
+scale it. Recall that for finding the height of a wall slice on the screen used the following
+relationship:
+
+![Figure]({{"/assests/raycaster_implementation/part_1/36.jpg" | absolute_url}})
+
+That is:
+
+projected\_wall\_height / dist\_to\_proj\_plane = 64 / ray\_hit\_dist
+
+The same relationship holds for sprites. That is:
+
+projected\_sprite\_height / dist\_to\_proj\_plane = 64 / distance\_to\_sprite
+
+And thus:
+
+projected\_sprite\_height = dist\_to\_proj\_plane * 64 / distance\_to\_sprite
+
+Since the distance to the projection plane is precomputed (see Part 1), then the final
+equation is:
+
+projected\_sprite\_height = 277 * 64 / distance\_to\_sprite
+
+Note that since every sprite is a square (a 64 pixel x 64 pixel square), the projected
+srite width is the same as the projected sprite height. So a summary of our computations
+is: 
+
+* projected\_sprite\_height = 277 * 64 / distance\_to\_sprite
+* projected\_sprite\_width = projection\_plane\_height
