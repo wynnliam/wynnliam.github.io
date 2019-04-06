@@ -19,6 +19,25 @@ understand it. Much of this post will be a more in-depth explanation of Layne's 
 
 So with that out of the way, let's get right into sprite casting!
 
+### Motivation: What are sprites, and why should we have them?
+This section is a quick addendum to my original article. I had realized I never gave any pictures
+of what sprites are exactly, and why we should need them, beyond a little sentence above. As I mentioned,
+sprites are objects in the world that aren't floors, walls, ceilings, or the sky. To give some motivation,
+here is one of my worlds with sprites added:
+
+
+![Figure]({{"/assests/raycaster_implementation/part_2/sprites.png" | absolute_url}})
+
+It's a beautiful forest, with a little stream on a cloudless day. If I didn't know any better,
+I'd have thought this was a real life location that I'd want to visit someday.
+
+And here is the same scene without any sprites:
+
+![Figure]({{"/assests/raycaster_implementation/part_2/no_sprites.png" | absolute_url}})
+
+It's an empty lot with some hints of grass and desert. As you can see, sprites add a lot of
+life to scenes.
+
 ### Section 1: The Overall Algorithm
 
 In broad strokes, to render sprites in our environment we do the following:
