@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Implementing a Ray Caster Part 3: Floor, Ceiling, and Sky Rendering"
-date: 2019-04-08 13:13:00 +0000
+date: 2019-04-09 13:13:00 +0000
 categories: raycaster news tutorial
 --- 
 
