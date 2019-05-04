@@ -1,11 +1,9 @@
 ---
 layout: post
 title: "Implementing a Ray Caster Part 4: Optimization Techniques"
-date: 2019-05-01 13:13:00 +0000
+date: 2019-05-03 18:30:00 +0000
 categories: raycaster news tutorial
 --- 
-
-TODO: Fix date!
 
 Welcome back, everyone. Today I will discuss some of the optimization techniques
 I used when implementing my raycaster. In broad strokes, this will cover two things:
@@ -131,4 +129,191 @@ In principle, the same thing applies to decimal values, albeit each place is a p
 instead of a power of 10. That is, 0110 translates to 0 * 2 ^ (3) + 1 * 2 ^ (2) + 1 * 2 ^ (1) + 0 * 2 ^ (0)
 which equals 0 * 8 + 1 * 4 + 1 * 2 + 0 * 1 which simplifies to 0 + 4 + 2 + 0 which thus equals 6 in decimal.
 
+Next, let's think about the number ten, which is 10 in decimal. That is, ten in decimal is 1 * 10 ^ (1) + 0 * 10 ^ (0).
+What happens when we multiply ten by ten? We get 100 in decimal. One hundred is 1 * 10 ^ (2) + 0 * 10 ^ (1) + 0 * 10 ^ (0).
+In other words, by shifting the one to the left, we increased our number by ten.
 
+Likewise, suppose we have the binary value 10, which is 2 in decimal. Now let's perform this shifting operation
+on binary 10. As before, we get 100, but since this is a binary value, the resulting decimal value is 2.
+In other words, doing a shift to the left doubles our value. If we shift to the right, it divides the value
+by two. We call this bit-shifting.
+
+You can perform bit-shifting in code, of course. Here's a snippet of C doing left shifting:
+
+```C
+int i = 1 << 1;
+```
+
+This takes 1 and shifts all the bits representing it to the left by 1. 1 in 4-bit binary would be this:
+
+```
+0001
+```
+
+So shifting it to the left once gives us:
+
+```
+0010
+```
+
+Which gives us decimal 2.
+
+### Using Bit Shifting for Division
+There's a lot of nuance I'm omitting here. But we now have enough theoretical and technical background to
+further optimize our system. It turns out that using 128 was not a coincidence. 128 is a power of two.
+That is, 128 = 2 ^ 7. In binary, that would be
+
+```
+10000000
+```
+
+Now let's take this number and bit-shift it right by 7:
+
+```
+00000001
+```
+
+We took 128 in decimal and divided it by 128! In other words, if we take any number and bit-shift it to the right,
+we divide it by 128. Concretely, lets examine our example of doing cosine with a look up table:
+
+```c
+10 * sin_lookup[23]
+```
+
+Since the sin\_lookup holds the sin value of each degree from 0 to 359 multiplied by 128, we have to
+divide the expression by 128 to get our final value. That is:
+
+```c
+10 * sin_lookup[23] \ 128
+```
+
+Division operations are notorious for their inefficiency. So we can impove this by doing:
+
+```c
+(10 * sin_lookup[23]) >> 7
+```
+
+Which is about as fast as we can make it. Admittedly, this is a contrived example. So let's see
+how these techniques can be used in a computation for the ray caster.
+
+## Applying Optimizations to Computations for a Ray in Quadrant 1
+Recall from the first part in the series the series of equations we needed to do for a ray in quadrant 1.
+I will list them here for you:
+
+* c\_h.x = ((c\_h.y - player.y) / Tan(alpha)) + player.x
+* c\_h.y = (floor(player\_pos.y / 64) * 64) - 1
+* d\_h.x = 64 / Tan(alpha)
+* d\_h.y = -64 (Since we travel in the negative direction along the y-axis)
+* c\_v.x = (floor(player.x / 64) * 64) + 64
+* c\_v.y = Tan(alpha)(c\_v.x - player.x) + player.y
+* d\_v.x = 64
+* d\_v.y = -Tan(alpha)(d\_v.x)
+
+As a brief sidenote, 64 is also a power of two. That is, 64 = 2^6. Also, d\_h.y and d\_v.x are
+constants, so there isn't a lot to do. Let's go through a few of these and see what we can't do.
+
+I'll start with the second equation. That is:
+
+```
+c_h.y = (floor(player_pos.y / 64) * 64) - 1
+```
+
+Now, c\_h.y is an integer in our system, and division will always floor your result. Right off the bat
+we get:
+
+```
+c_h.y =  (player_pos.y / 64) * 64 - 1
+```
+
+You might think that the multiplication and division cancel out. Not quite. Since this is integer division,
+if you divided say 158 (not a multiple of 64) by 64, you get 2. The correct answer is actually 2.46875. However,
+we can use the fact that 64 is a power of two to simplify this. Using bit shifting, the result becomes:
+
+```
+c_h.y = ((player_pos.y >> 6) << 6) - 1;
+```
+
+Next, let's find c\_h.x. We start with this:
+
+```
+c_h.x = ((c_h.y - player.y) / Tan(alpha)) + player.x
+```
+
+First, Tan is done with a lookup table. However, I made a lookup table for 128 divided by the tangent, which I called
+tan1. Note that A / B = A * (1/B). Using this fact, we can rewrite this as:
+
+```
+c_h.x = ((c_h.y - player.y) * tan1[alpha] / 128) + player.x
+```
+
+Now with out bit-shifting tricks, this becomes:
+
+```
+c_h.x = ((c_h.y - player.y) * tan1[alpha] >> 7) + player.x
+```
+
+We can do a similar thing for d\_h.x:
+
+```
+d_h.x = 64 / Tan(alpha)
+```
+
+Can become:
+
+```
+d_h.x = 64 * tan1[alpha] >> 7
+```
+
+Now this is interesting. Note that we computee 64 * tan1[alpha]. As we showed before, this
+is equivalent to tan1[alpha] << 6. But then we bit shift to the right by 7. We go left 6, then 7 right,
+so the net shift is 1 to the right. Hence:
+
+```
+d_h.x = tan1[alpha] >> 1
+```
+
+c\_v.x is similar to c\_h.y, so I won't bother deriving the optimized solution. It is:
+
+```
+c_v.x = ((player.x >> 6) << 6) + 64
+```
+
+Now we can optimize c\_v.y. Note that this will use a lookup table tan[alpha], which is 128 * tan(alpha).
+This is distinct from tan1[alpha], which is 128 / tan(alpha). Thus, we need only to divide by 128 like so:
+
+```
+c_v.y = ((tan[alpha] * (c\_v.x - player.x)) >> 7) + player.y
+```
+
+Lastly, we have d\_v.y. That is:
+
+```
+d_v.y = -Tan(alpha)(d_v.x)
+```
+
+This is fairly easy to optimize. The result is:
+
+```
+d_v.y = (-tan[alpha] * d_v.x) >> 7
+```
+
+And there we have it! All of our values computed in an optimized form. Below is a summary of the calculations:
+
+```
+c_h.y = ((player_pos.y >> 6) << 6) - 1;
+c_h.x = ((c_h.y - player.y) * tan1[alpha] >> 7) + player.x
+
+d_h.x = tan1[alpha] >> 1
+d_h.y = -64
+
+c_v.x = ((player.x >> 6) << 6) + 64
+c_v.y = ((tan[alpha] * (c_v.x - player.x)) >> 7) + player.y
+
+d_v.x = 64
+d_v.y = (-tan[alpha] * d_v.x) >> 7
+```
+
+## Final Remarks
+This is the end of my little series! I hope you found it enjoyable as well as informative. While it is
+unlikely I'll add new features to the ray caster, if I do I'll write similar posts to the ones in this
+series. Until next time, thank you for reading!
