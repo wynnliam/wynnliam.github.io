@@ -21,12 +21,25 @@ from an external file without having to recompile the entire project.
 
 For the source code, go [here]({{ "https://github.com/wynnliam/raycore" | absolute_url }})
 
+![Figure]({{"/assests/raycaster_implementation/part_3/sky_floor_ceil.jpg" | absolute_url}})
+![Figure]({{"/assests/raycaster_implementation/part_2/sprites.png" | absolute_url}})
+
+
+---
+
+
 # An Engine of Ice and Fire
 An Engine of Ice and Fire (AEOIAF) is a near fully-functioning tile based 2D top down game
 engine written in C++. It features an rich actor system, a game state manager, basic texture
 rendering, AI, and a working weapon system. I developed it over the course of about two years.
 
 Click [here]({{ "https://github.com/wynnliam/an_engine_of_ice_and_fire" | absolute_url }}) to get it.
+
+![Figure]({{ "/assests/aeoiaf_demo.png" | absolute_url }})
+
+
+---
+
 
 # Blazonry Parser
 The Blazonry Parser is an experiment in language theory and functional programming.
