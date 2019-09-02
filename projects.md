@@ -40,6 +40,23 @@ Click [here]({{ "https://github.com/wynnliam/an_engine_of_ice_and_fire" | absolu
 
 ---
 
+# Texture Generator
+Texture Generator is a machine learning experiment that creates texture images
+using the variational autoencoder model. Essentially, I give the model a series
+of images of the kinds of textures I want, and then it will use those to build
+new samples from normally distrubted noise. The kinds of textures it produces
+are 64 x 64 pixel grayscale bitmaps.
+
+
+Click [here]({{"https://github.com/wynnliam/texture_generator" | absolute_url }}) to get it.
+
+
+![Figure]({{"/assests/texture_generation_output/0.png" | absolute_url}})
+![Figure]({{"/assests/texture_generation_output/1.png" | absolute_url}})
+![Figure]({{"/assests/texture_generation_output/2.png" | absolute_url}})
+
+---
+
 
 # Blazonry Parser
 The Blazonry Parser is an experiment in language theory and functional programming.
