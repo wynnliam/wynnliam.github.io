@@ -8,17 +8,18 @@ These are some of the projects I've worked on over the past few months. While th
 more on my github page, these are my most important ones. To see the rest of my work, go
 [here]({{ "https://github.com/wynnliam" | absolute_url }})
 
-# Raycaster
-For my Full Stack Web Development final project, I implemented a ray caster based renderer
-for pseudo-3D environments. It was entirely front-end. It render both indoor and outdoor
-environments, including textures floors, ceilings, and walls. Also, it supports sprite
-rendering, so levels can have props and other objects in them. In addition, you can have
-rendered sky textures. After I completed the class, I designed a simple level file parser
-so you can load levels from file and render them.
+# raycore
+A simple, ray casting based, pseudo-3d game engine. It can handle both indoor and outdoor
+scenes, including textured floors, ceilings, and walls. In addition, it supports sprite rendering
+so environments can have props and other objects in them.
 
-Click [here]({{ "https://web.cecs.pdx.edu/~wynnliam" | absolute_url }}) to see it in action.
+In addition to rendering environments, there is an entity system that allows game logic to be
+included in levels. Now you can actually do things in the game, instead of just walking around.
 
-Click [here]({{ "https://github.com/wynnliam/CS410p_Raycaster" }}) to see the source code.
+Finally, I wrote a simple file loader specifically for raycore. This allows you to load levels
+from an external file without having to recompile the entire project.
+
+For the source code, go [here]({{ "https://github.com/wynnliam/raycore" | absolute_url }})
 
 # An Engine of Ice and Fire
 An Engine of Ice and Fire (AEOIAF) is a near fully-functioning tile based 2D top down game
