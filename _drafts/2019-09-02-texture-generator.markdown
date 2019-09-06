@@ -46,8 +46,14 @@ For example, I want a "honeycomb" texture, and perhaps it gives me one of the fo
 
 (These are examples of what my model ended up actually generating)
 
+Broadly speaking, how would this be done? We will basically need to take as input some noise, and spit out
+a texture. Visually, our problem is as follows:
+
+![Figure]({{ "/assests/tex_gen_overview/overview.png" | absolute_url }})
+
 Now, as far as I can tell, there isn't an obvious function or algorithm that maps say noise to generated texture samples.
-That's where machine learning comes in: it helps us find mappings between domains that aren't otherwise apparent.
+That's where machine learning comes in: it helps us find mappings between domains that aren't otherwise apparent. So
+let's take a quick survey of models that I found weren't suitable, and then we'll get into the varational autoencoder.
 
 ## Models and techniques that I found insufficient
 Texture generation (also called "texture synthesis") is not a new problem. Here are some of the algorithms
@@ -59,13 +65,19 @@ onto a larger surface. This graphic from Douglas Lanman explains it:
 
 ![Figure]({{ "/assests/texture_generation_output/imagequilting.gif" | absolute_url}})
 
+What I like about this algorithm is that it's simple: you don't need an elaborate model to get good results.
+However, the problem is that it takes as input a sample texture and basically shuffles that. What I want is to
+generate entirely new samples without relying off of given samples *at generation time*. You see, I will use
+samples to learn a mapping between noise and textures. Once I have that mapping, I should no longer need samples
+to generate textures.
+
 ### Gatys et. al. Method
 In what was a follow up to their famous Style Transfer, Gatys et. al. employed the same style transfer technique,
 but applied to noise. So given a source texture, and a noise image, they produces a new texture image. The paper
 for this is [here](https://arxiv.org/abs/1505.07376)
 
-As great as these methods are, I didn't like them because they required your inputs to have a source texture image.
-My goal was to have a program that could generate samples without a source image.
+As great as this method is, it has the same problem as quilting: at generation time, I have to give the system
+a sample texture to work with.
 
 ### Deep Convolutional Generative Adversarial Networks
 The current state of the art for such a generative approach is the GAN (Generative Adversarial Networks). Since
@@ -90,4 +102,4 @@ Essentially, the training just falls apart and the discriminator fails entirely 
 can give it some junk "example" and no matter what it passes.
 
 ## Variational Autoencoders
-TODO: Finish me!
+A
