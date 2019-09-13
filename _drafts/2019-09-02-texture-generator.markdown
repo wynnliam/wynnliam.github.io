@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Texture Generation Using Variational Autoencoders"
-date: 2019-09-02 17:12:00 +0000
+date: 2019-09-13 00:30:00 +0000
 categories: ml texture raycore
 --- 
 
@@ -102,4 +102,89 @@ Essentially, the training just falls apart and the discriminator fails entirely 
 can give it some junk "example" and no matter what it passes.
 
 ## Variational Autoencoders
-A
+Now that we've seen some models that I didn't like, let's explore the one I did like: the Variational Autoencoder.
+Whereas a GAN has two networks that compete, a VAE has two networks that cooperate. The two networks
+are called the encoder and decoder networks. Essentially, the encoder will take an input image and "encode" it
+but mapping it to a latent space. Then, the decoder will do the reverse process: take the latent values and
+reconstruct the input.
+
+VAE's have several uses. An obvious example is data compression. Suppose I find an image on the net I want, so I save it.
+If the image is high res, then I will be transferring a lot of data. So instead, we encode the image into a vector from
+some latent space, transfer said vector to my device, then decode it to my original image.
+
+In my case, I train a VAE to learn to encode texture images into a latent space, then take the latent space values and
+decode them back into the input image. Once my VAE is sufficiently trained, I use my decoder network as the generator.
+I can basically plug in random values for my latent space, and then have the network decode these values into a generated
+texture.
+
+### A brief explanation of how VAEs work
+There is a wealth of tutorials that dive into the innards of the Variational Autoencoder. The two most useful ones
+I found are [here]({{ "https://youtu.be/9zKuYvjFFS8" | absolute_url }}) and [here]({{ "https://arxiv.org/abs/1606.05908" | absolute_url }}).
+
+Nonetheless, I will do my best to at least give an overview of how VAEs work. The encoder network is your typical neural network. Your
+input is a vector of values that go through a series of network layers until it reaches the output. The output is two vectors:
+one of means and one of standard deviations. I call this the "latent space" because we don't really know how the values relate to the input.
+That is, we don't know how tuning these values will affect the output, hence it is hidden or "latent".
+
+The decoder network works by using these means and standard deviations to sample from a normal distribution. If you were wondering
+how we know what values to use for the input of the generation step above, this is how. The means and standard deviations
+are used to get a vector of normally distributed noise. This noise is what is fed into our decoder, not the means and standard deviations.
+
+The loss of the model is the sum of two values: the reconstruction loss and the latent loss. The reconstruction loss
+is the squared difference between the input image and its reconstruction. The latent loss is the [KL Divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) between a normal distrubtion and the gaussian distribution formed by our latent means and standard deviations. The goal
+is to make this as close to a normal distribution as possible.
+
+## Overview of the Model
+Okay so now I will give a specification of the model I used. There will be three parts: the encoder network, the decoder network,
+and the optimizer algorithm I used.
+
+The encoder network is as follows:
+
+* It has three convolutional layers with drop out applied.
+* Each of the convolutional layers has leaky ReLU activation applied to it
+* Then it has two seperate dense layers that compute the give us the mean and standard deviation vectors.
+Both of these vectors have eight values in them.
+
+The decoder is as follows:
+
+* It has four transposed convolutional layers, each with drop out applied.
+* The activation for the first layer is ReLU, while the second two have leaky ReLU applied. The last one has sigmoid activation.
+
+Finally, the optimization algorithm used is the [Adam Optimizer](https://machinelearningmastery.com/adam-optimization-algorithm-for-deep-learning/)
+with a learning rate of 0.0005 applied.
+
+# Results
+I trained the model for 3001 epochs. Having it run on the GPU made training a cinch, because it took only about 30 minutes or so.
+As you will see, the results were very stellar. I hadn't expected a somewhat antiquated model (in "tech time", 4 or 5 years is
+dated) to do so well.
+
+In fact, I had initially gone with a GAN because it is state of the art. However, a powerful model needs a lot of data to work with,
+and it has a lot of ways it can fail, as I explained above. So using the VAE for this proved to be a wonderful suprise.
+
+I shared these textures before, but I will share them here again:
+
+![Figure]({{ "/assests/texture_generation_output/0.png" | absolute_url }})
+![Figure]({{ "/assests/texture_generation_output/1.png" | absolute_url }})
+![Figure]({{ "/assests/texture_generation_output/2.png" | absolute_url }})
+
+## Future Work
+Not all of the generated examples were perfect, of course. A few came out very blurry. I think this can be rectified in
+two ways:
+
+* Use more training data. I gave the model only about 6 or so source images to learn from, so having more could
+learn a richer space.
+* Let the model run longer. This way it can learn the texture space and thus avoid blurry results.
+
+And if you're wondering why there's only these honeycomb textures, it's because I only trained on honeycomb textures.
+I would like to create models for more texture types. Furthermore, the textures themselves are greyscale. This actually
+doesn't bother me too much because I want to learn the texture features themselves independent of color.
+
+That said, I want to add color to my resulting textures. I hope to have a program in the future that would take an
+input like "three red honeycombs" and spit out three generated honeycomb textures with red coloring.
+
+Lastly, I want my generated textures to be seamless. That is, if two adjacent walls have a generated texture, you wouldn't
+see an abrupt edge that clearly indicates the texture is repeating. While for some textures this isn't a problem, imagine
+a patch of grass. The grass texture shouldn't be repeating in an obvious way.
+
+# Final Remarks
+I hope you enjoyed this article! If you're interested in this project, you can check it out [here](https://github.com/wynnliam/texture_generator).
