@@ -5,6 +5,8 @@
 layout: home
 ---
 
+![Selfie]({{ "/assests/selfie.jpg" | absolute_url }})
+
 Hi all! Welcome to my website. My name is Liam Wynn. Let me tell you a bit about myself.
 
 I was born and raised in Portland, Oregon. I've lived here my entire life and as much as I
@@ -20,6 +22,8 @@ and made the Dean's List seven times.
 
 While I'm a bookworm and nerd through and through, I do have a life beyond studying if you can believe
 it. I love to go hiking, camping, and working out.
+
+![Brothers]({{ "/assests/brothers_wynn.JPG" | absolute_url }})
 
 I hope you find this site a pleasure to view. If you'd like to connect, here are the best ways to reach out to me:
 
