@@ -31,6 +31,8 @@
       </header>
       <section>
 
+      <p><a href="{{ "/" | relative_url }}">Home</a></p>
+
   {%- if site.posts.size > 0 -%}
     <h2 class="post-list-heading">{{ page.list_title | default: "Posts" }}</h2>
     <ul class="post-list">
@@ -49,6 +51,8 @@
       </li>
       {%- endfor -%}
     </ul>
+
+      <p><a href="{{ "/" | relative_url }}">Home</a></p>
 
     <p class="feed-subscribe">
       <a href="{{ 'feed.xml' | relative_url }}">
