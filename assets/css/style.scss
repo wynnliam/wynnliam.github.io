@@ -1,0 +1,66 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+body {
+	background-color: #2f2fa2;
+}
+
+p {
+	color: #ffffff;
+
+	a {
+		color: #f64c72;
+	}
+}
+
+a {
+	color: #ffffff;
+}
+
+a:hover {
+	color: #d2d2d2;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color: #ffffff;
+}
+
+header {
+	h1 {
+		a {
+			color: #f64c72;
+		}
+
+		a:hover {
+			color: #f61b4b;		
+		}
+	}
+}
+
+small {
+	color: #f64c72;
+}
+
+li {
+	color: #ffffff;
+}
+
+li::marker {
+	color: #99738e;
+}
+
+.post-meta {
+	color: #f64c72;
+}
+
+/*li { color: #e6e6e6; }
+
+.post-meta { color: #e6e6e6; }
+
+p { color: #e6e6e6; }
+h1 { color: #e6e6e6; }
+h2 { color: #e6e6e6; }
+h3 { color: #e6e6e6; }
+small { color: #e6e6e6; }*/
