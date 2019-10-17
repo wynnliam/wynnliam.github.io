@@ -5,7 +5,7 @@
 layout: home
 ---
 
-![Selfie]({{ "/assests/selfie.jpg" | absolute_url }})
+{% include image_and_caption.html url="/assests/selfie.jpg" description="A lovely shot of me, Liam Wynn" %}
 
 Hi all! Welcome to my website. My name is Liam Wynn. Let me tell you a bit about myself.
 
@@ -23,7 +23,7 @@ and made the Dean's List seven times.
 While I'm a bookworm and nerd through and through, I do have a life beyond studying if you can believe
 it. I love to go hiking, camping, and working out.
 
-![Brothers]({{ "/assests/brothers_wynn.JPG" | absolute_url }})
+{% include image_and_caption.html url="/assests/brothers_wynn.JPG" description="My brother (right) and I (left)" %}
 
 I hope you find this site a pleasure to view. If you'd like to connect, here are the best ways to reach out to me:
 
