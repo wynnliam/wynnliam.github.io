@@ -63,7 +63,7 @@ I want to simulate environments with large groups of agents moving around. This 
 with the help of the Unity Engine, so collisions between agents work seamlessly. The best
 description is a neat little video:
 
-[![Watch the video]({{ "/assests/flow-field-post/boid-demo.png" | absolute_url}} )]({{ "/assests/flow-field-post/boids-in-action.webm" | absolute_url }})
+[![Watch the video]({{ "/assests/flow-field-post/boid-demo.png" | absolute_url}} )]({{ "/assests/flow-field-post/boid-demo.mp4" | absolute_url }})
 (Click to watch video)
 
 Click [here](https://github.com/wynnliam/alexander) to get it.
