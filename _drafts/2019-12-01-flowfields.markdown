@@ -14,6 +14,7 @@ meshes so that their generation is done quickly. Here is a simple video detailin
 
 
 [![Watch the video]({{ "/assests/flow-field-post/boid-demo.png" | absolute_url}} )]({{ "/assests/flow-field-post/boids-in-action.webm" | absolute_url }})
+(Click to watch video)
 
 
 Before we get started, I wanted to touch on a couple of things. This entire post is detailing the flock system used in my project
@@ -69,7 +70,8 @@ For the sake of this article, I won’t go into the math of them. You can find a
 online, and one of my favorite is a series by [Fernando Bevilacqua]( https://gamedevelopment.tutsplus.com/tutorials/understanding-steering-behaviors-movement-manager--gamedev-4278).
 
 
-Steering forces give you the power to easily simulate individual agents. You can extend steering forces
+So what are "flock systems"? They are an extension to basic steering forces. Steering forces give you the
+power to easily simulate individual agents. You can extend steering forces
 to simulate a flock of birds (hence the names “flock” or “boid” systems), thanks to the work of
 [Craig Reynolds](http://www.cs.toronto.edu/~dt/siggraph97-course/cwr87/)
 
@@ -97,18 +99,22 @@ With a brief understanding of these concepts in mind, let us now dive into flow 
 # Flow Fields
 So we know how to move an individual boid, and we know how to move a flock of boids. This is great,
 but suppose you want to navigate a space with obstacles? We need some way to have our flocks navigate.
-It may be tempting to hit this with something like A-star, but there are runtime problems with this.
+It may be tempting to hit this with something like [A-star](https://en.wikipedia.org/wiki/A*_search_algorithm),
+but there are runtime problems with this.
 
-For one, suppose we did A-star on individual boids. As absurd as this may be, it does have some benefits.
 Consider a scenario where, for some reason, a member of the flock was separated from the rest of its group:
 
 
 ![figure]({{ "/assests/flow-field-post/boid-seperated.jpg" | absolute_url }})
 
 
-If we did A-star on the entire flock, we run into an issue where this boid can’t navigate like the
-rest of the group because the path it would need is different. I’m sure there are ways to rectify
-this, but we can just avoid this problem by using a simpler method: flow fields.
+If we did a single A-star search for the entire flock, we run into an issue where this boid can’t navigate like the
+rest of the group because the path it would need is different. So we would probably have to do something
+like A-star on each of the individual boids. This would bring serious runtime problems in your simulation.
+Also, you would have to make sure your A-star search returns a list of steering forces that push your boids
+along the path. And if the path changes, you need to construct a new list.
+
+The problems go on and on, but we can avoid all of them with Flow Fields.
 
  
 Suppose you have a tile grid of N rows and M columns. Then a flow field would be a 2D array of
@@ -197,6 +203,8 @@ for each region. Going back to first example, if we wanted a flow field for it, 
 to:
 
 ![figure]({{"/assests/flow-field-post/l-corridor-flow-field-2.jpg" | absolute_url}})
+
+Our search space goes from 16 walkable tiles to 3 regions. 
 
 There are two issues with this method: first is finding an algorithm to generate these navigation regions,
 which must be ran up front before the simulation begins. The second is that you will only have an approximation
