@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Real Time Pathfinding Using Flow Fields Optimized with Navigation Meshes"
-date: 2019-12-01 00:30:00 +0000
+date: 2019-12-05 00:30:00 +0000
 categories: alexander
 --- 
 
