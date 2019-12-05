@@ -115,7 +115,6 @@ Also, you would have to make sure your A-star search returns a list of steering 
 along the path. And if the path changes, you need to construct a new list.
 
 The problems go on and on, but we can avoid all of them with Flow Fields.
-
  
 Suppose you have a tile grid of N rows and M columns. Then a flow field would be a 2D array of
 vectors with dimensions N rows and M columns. Given the entry (i, j), the corresponding vector
@@ -155,7 +154,7 @@ some costs up front, then yes. What I mean is that we can spend some time at the
 computing a “navigation mesh”, which is a graph that groups walkable spaces together (the edges denoting
 which groups are adjacent). So in our space, groups of walkable areas would be groups of tiles. We do
 not group tiles arbitrarily – the next little example will hopefully give you an intuition for how we
-build our navigation region. Consider a level that looks like this:
+build our navigation mesh. Consider a level that looks like this:
 
 ![figure]({{"/assests/flow-field-post/l-corridor-1.jpg" | absolute_url}})
 
@@ -174,12 +173,14 @@ This is what we call a "direct line of sight":
 
 Yes, this is a contrived example, but it gets the point across. The white tiles are all in the same rectangular region, and the grey ones
 are walls. The red line is an example of "direct line of sight". The top left tile and the bottom right tile have a line that goes directly
-between them that does not intersect any grey walls. What is the implication of this? It means there is a steering forces that will
+between them that does not intersect any grey walls.
+
+What is the implication of this? It means there is a steering force that will
 push you from one of these tiles straight to the next without hitting any walls. And this is true for *all tiles in a single navigation region*.
 Meaning: from any one tile in this region, there is a steering force to any other tile. Thus, you now have a guarantee that so long as your destination
 is in the same region, you will not bump into any walls.
 
-Furthermore, there is a relationship between the
+Furthermore, there is a relationship *between* the
 rectangular regions: If you are to combine a region with one that is directly adjacent to it, they will form a
 rectangle. This is important because it gives us another guarantee: there is a direct path of travel between
 any point in one region, and any point in an adjacent region:
@@ -192,7 +193,7 @@ we can combine these two regions into a bigger one like so:
 ![figure]({{"/assests/flow-field-post/between-region-los-2.jpg" | absolute_url}})
 
 This means that every tile in *both* of these regions has a direct line of sight to *any other tile* in these regions. Witch means
-we can construct a steering force between any tile in these regions.
+we can construct a steering force between any tile in these two regions.
 
 Now what is the significance of these navigation regions? In the context of flow fields, we can say “what is true
 for one tile in this region is true for all tiles in this region”. Thus, we need only one steering force vector
@@ -200,18 +201,22 @@ for each region. Going back to first example, if we wanted a flow field for it, 
 
 ![figure]({{"/assests/flow-field-post/l-corridor-flow-field-1.jpg" | absolute_url}})
 
-to:
+to this:
 
 ![figure]({{"/assests/flow-field-post/l-corridor-flow-field-2.jpg" | absolute_url}})
 
 Our search space goes from 16 walkable tiles to 3 regions. 
 
 There are two issues with this method: first is finding an algorithm to generate these navigation regions,
-which must be ran up front before the simulation begins. The second is that you will only have an approximation
+which must be ran up front before the simulation begins.
+
+The second is that you will only have an approximation
 to the most efficient path. There are some cases where the corresponding steering force for a particular tile will
-not point directly at the goal when it otherwise could have. I personally found that such losses in accuracy in
-path solutions to be miniscule for a real time simulation like Alexander. There are ways to rectify this, but I
-will not detail them here. I will, however, give a brief overview of how you may generate such navigation meshes.
+not point directly at the goal when it otherwise could have.
+
+I personally found that such losses in accuracy in
+path solutions to be too miniscule to account for in a real time simulation like Alexander. There are ways to rectify this, but I
+will not detail them here.
 
 # Generating Navigation Meshes
 
@@ -235,11 +240,12 @@ It’s overall structure is:
 2. while True:
 	- found_split = false
 	- scan each navigation region in navigation mesh.
-		- If any region needs to be split into constituent region:
+		- If any region needs to be split into constituent regions:
 			- split the region
 			- place results in navigation mesh
 			- found_split = true
-	- found_split = true
+	- if found_split is false:
+		- break
 ```
 
 Essentially, we continue to “split” these regions until it is no longer possible. What does it mean to
@@ -256,6 +262,7 @@ with our navigation regions: every navigation region is a rectangle, and each re
 with any one of its neighbors to form a bigger rectangle. By having these constraints we ensure
 that each tile within a region has a direct line of sight to each tile in an adjacent region.
 Thanks to this, we can do flow field generation on entire regions instead of one tile at a time.
+This saves on both space and run costs.
 
 And that’s it for this post. I hope you found this useful. Please do checkout my project
 [Alexander](https://github.com/wynnliam/alexander) if you want to see this system in action.
