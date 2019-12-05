@@ -33,21 +33,21 @@ So what is a “steering force”? They are vectors you apply to objects that mo
 movements smoothly. Let’s look at the graphic below:
 
 
-GRAPHIC OF AGENT MOVING IN DIRECTION INDICATED BY BLUE ARROW
+![figure]({{"/assests/flow-field-post/agent-moving.jpg" | absolute_url}})
 
 
 The blue arrow represents the velocity of the agent. Suppose now something happens in the simulation, and the
 agent want to go towards some goal:
 
 
-GRAPHIC OF AGENT AS ABOVE BUT WITH A RED FLAG
+![figure]({{"/assests/flow-field-post/agent-moving-new-target.jpg" | absolute_url}})
 
 
 The red flag indicates the desired destination of the agent. Given this target, we can compute the desired velocity
 for the agent to move towards that goal:
 
 
-GRAPHIC AS ABOVE BUT WITH RED ARROW GOING FROM AGENT TO TARGET
+![figure]({{"/assests/flow-field-post/agent-moving-new-target-new-velocity.jpg" | absolute_url}})
 
 
 Now we have two velocities: one for the agent currently (indicated in blue) and one for what the agent wants to have
@@ -61,13 +61,13 @@ and some that push you away from hazards. The power of steering forces lies in i
 from simple rules:
 
 
-IMAGE DEPICTING THE POWER OF STEERING FORCES
+![figure]({{"/assests/flow-field-post/simple-steering-forces.png" | absolute_url}})
+Credit to [Fernando Bevilacqua]( https://gamedevelopment.tutsplus.com/tutorials/understanding-steering-behaviors-movement-manager--gamedev-4278).
 
 
 For the sake of this article, I won’t go into the math of them. You can find a million of such tutorials and articles
 online, and one of my favorite is a series by [Fernando Bevilacqua]( https://gamedevelopment.tutsplus.com/tutorials/understanding-steering-behaviors-movement-manager--gamedev-4278).
 
- 
 
 Steering forces give you the power to easily simulate individual agents. You can extend steering forces
 to simulate a flock of birds (hence the names “flock” or “boid” systems), thanks to the work of
@@ -78,9 +78,18 @@ Essentially, you begin with the idea that agents (from here on out called “boi
 Then, using these flocks you can come up with new steering forces to govern groups of boids. The three main ones are:
 
 * Cohesion: a steering force that encourages nearby boids to be closer to each other
+
+![figure]({{ "https://www.red3d.com/cwr/boids/images/cohesion.gif" | absolute_url }})
+
 * Separation: a steering force that, the larger its magnitude, encourages boids to maintain a distance from each other more
+
+![figure]({{ "https://www.red3d.com/cwr/boids/images/separation.gif" | absolute_url }})
+
 * Alignment: encourages boids to line up with other boids nearby in its flock
-TODO: ADD GRAPHIC FOR EACH OF THESE
+
+![figure]({{ "https://www.red3d.com/cwr/boids/images/alignment.gif" | absolute_url }})
+
+Images from [Craig Reynolds](https://www.red3d.com/cwr/boids/)
 
 The article I posted above dives more deeply into the math of these, if you are interested in reading more about them.
 With a brief understanding of these concepts in mind, let us now dive into flow fields themselves.
@@ -94,7 +103,7 @@ For one, suppose we did A-star on individual boids. As absurd as this may be, it
 Consider a scenario where, for some reason, a member of the flock was separated from the rest of its group:
 
 
-IMAGE OF BOID SEPARATED FROM THE REST OF THE GROUP
+![figure]({{ "/assests/flow-field-post/boid-seperated.jpg" | absolute_url }})
 
 
 If we did A-star on the entire flock, we run into an issue where this boid can’t navigate like the
@@ -108,14 +117,24 @@ would be a steering force that pushes you in the direction of the next tile. Ide
 follow these forces, they will eventually guide you towards a goal as depicted here:
 
 
-IMAGE OF A FLOW FIELD
+![figure]({{ "/assests/flow-field-post/flow-field-demo.jpg" | absolute_url }})
 
 
 The dark grey tiles are walls. What makes flow fields attractive is the fact that they are easy to generate.
 Suppose you have a goal position that is the tile at (i, j). The algorithm for generating the flow field is as follows:
 
- 
-BREADTH FIRST SEARCH STARTING AT END GOAL GOING OUTWARDS
+```
+1. Create 2d array of vectors of size M by N (size of the tile grid). Call this T
+	- Set each of these to some initial null value
+2. Create a queue of unvisited positions Q
+3. Add goal position to Q
+4. While Q is not empty:
+	-n = dequeue(Q)
+	-For each neighbor w of n:
+		- If T[w.row][w.col] is null:
+			-T[w.row][w.col] = vector from w to n
+			-Add w to Q
+```
 
 For a given flock, we need only one flow field to find the goal. This way, we can use the power of steering
 forces and flock behaviors while seamlessly adding pathfinding. Flow fields are not new: they were used in
@@ -132,13 +151,13 @@ which groups are adjacent). So in our space, groups of walkable areas would be g
 not group tiles arbitrarily – the next little example will hopefully give you an intuition for how we
 build our navigation region. Consider a level that looks like this:
 
-IMAGE OF LEVEL THAT LOOKS LIKE AN L-SHAPED CORRIDOR
+![figure]({{"/assests/flow-field-post/l-corridor-1.jpg" | absolute_url}})
 
 The red flag denotes the goal. Since we will compute a vector for all walkable tiles that can reach the
 goal, we don’t bother putting an agent/flock in this graphic. I will now show the same image overlaid
 with a navigation mesh:
 
-IMAGE OF SAME LEVEL WITH NAVIGATION MESH
+![figure]({{"/assests/flow-field-post/l-corridor-2.jpg" | absolute_url}})
 
 I’d like to interject with some history. I actually used a similar navigation mesh system like the one I
 detail here, but with A-star path finding. I did this with An Engine of Ice and Fire about [five years ago](https://github.com/wynnliam/an_engine_of_ice_and_fire).
@@ -182,28 +201,26 @@ It is the second part that, in my opinion, is far more salient.
 
 It’s overall structure is:
 
-SPLITTING ALGORITHM
+```
+1. found_split = true
+2. while True:
+	- found_split = false
+	- scan each navigation region in navigation mesh.
+		- If any region needs to be split into constituent region:
+			- split the region
+			- place results in navigation mesh
+			- found_split = true
+	- found_split = true
+```
 
 Essentially, we continue to “split” these regions until it is no longer possible. What does it mean to
 “split”? Suppose I have two adjacent regions that are as follows:
 
-TWO BAD ADJACENT REGIONS
+![figure]({{"/assests/flow-field-post/two-regions.jpg" | absolute_url}})
 
 I need to pick one of these pieces and break it in either two or three pieces, perhaps as follows:
 
-TWO BETTER REGIONS
-
-There are several cases of splitting, and sometimes we need to split both regions until the
-navigation mesh looks right. Suppose this did happen: we split a region but the resulting
-navigation mesh didn’t look right:
-
-CASE OF IMPERFECT REGIONS
-
-This is fine because our splitting algorithm will keep going as long as we need to keep
-splitting, so we just save the next region for a future iteration of our loop. There are
-about ten different cases for splitting, and that would be an article unto itself.
-Hopefully you at least have an intuition for how navigation meshes are created, and how we can use them for fast flow fields.  
-
+![figure]({{"/assests/flow-field-post/two-regions-split.jpg" | absolute_url}})
 
 And that’s it for this post. I hope you found this useful. Please do checkout my project
 [Alexander](https://github.com/wynnliam/alexander) if you want to see this system in action.
