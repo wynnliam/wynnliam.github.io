@@ -13,7 +13,7 @@ pathfinding. Finally, I will detail how you can optimize flow fields with naviga
 meshes so that their generation is done quickly. Here is a simple video detailing what the result of all this looks likes:
 
 
-[![Watch the video]({{ "/assests/flow-field-post/boid-demo.png" | absolute_url}} )]({{ "/assests/flow-field-post/boids-in-action.webm" | absolute_url }})
+[![Watch the video]({{ "/assests/flow-field-post/boid-demo.png" | absolute_url}} )]({{ "/assests/flow-field-post/boid-demo.mp4" | absolute_url }})
 (Click to watch video)
 
 
