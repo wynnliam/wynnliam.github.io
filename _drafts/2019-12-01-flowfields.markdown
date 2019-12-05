@@ -222,5 +222,10 @@ I need to pick one of these pieces and break it in either two or three pieces, p
 
 ![figure]({{"/assests/flow-field-post/two-regions-split.jpg" | absolute_url}})
 
+Hopefully you can see now the regions are split such that they fulfill the guarantees we wanted
+with our navigation regions: every navigation region is a rectangle, and each region could be combined
+with any one of its neighbors to form a bigger rectangle. By having these constraints we ensure
+that each tile within a group  TODO: EMPHASIZE THE POWER OF THIS OPTIMIZATION
+
 And that’s it for this post. I hope you found this useful. Please do checkout my project
 [Alexander](https://github.com/wynnliam/alexander) if you want to see this system in action.
