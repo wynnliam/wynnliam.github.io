@@ -169,20 +169,34 @@ This is what we call a "direct line of sight":
 Yes, this is a contrived example, but it gets the point across. The white tiles are all in the same rectangular region, and the grey ones
 are walls. The red line is an example of "direct line of sight". The top left tile and the bottom right tile have a line that goes directly
 between them that does not intersect any grey walls. What is the implication of this? It means there is a steering forces that will
-push you from one of these tiles straight to the next without hitting any walls.
+push you from one of these tiles straight to the next without hitting any walls. And this is true for *all tiles in a single navigation region*.
+Meaning: from any one tile in this region, there is a steering force to any other tile. Thus, you now have a guarantee that so long as your destination
+is in the same region, you will not bump into any walls.
 
-Thus, you now have a guarantee that so long as your destination
-is in the same region, you will not bump into any walls. Furthermore, there is a relationship between the
+Furthermore, there is a relationship between the
 rectangular regions: If you are to combine a region with one that is directly adjacent to it, they will form a
 rectangle. This is important because it gives us another guarantee: there is a direct path of travel between
-any point in one region, and any point in an adjacent region. This latter guarantee doesn’t hold for every region.
-For instance, the blue region and the red region, while both being adjacent to the green region, would not form
-a single rectangular region all together.
+any point in one region, and any point in an adjacent region:
+
+![figure]({{"/assests/flow-field-post/between-region-los.jpg" | absolute_url}})
+
+The red region and blue regions are both rectangles, so the property about line of sight among their constituent tiles holds. However,
+we can combine these two regions into a bigger one like so:
+
+![figure]({{"/assests/flow-field-post/between-region-los-2.jpg" | absolute_url}})
+
+This means that every tile in *both* of these regions has a direct line of sight to *any other tile* in these regions. Witch means
+we can construct a steering force between any tile in these regions.
 
 Now what is the significance of these navigation regions? In the context of flow fields, we can say “what is true
 for one tile in this region is true for all tiles in this region”. Thus, we need only one steering force vector
-for each of these regions. This reduces our search space from several tiles to three regions. Generating a flow
-field is now done on the regions themselves, not the tiles they hold.
+for each region. Going back to first example, if we wanted a flow field for it, we go from this:
+
+![figure]({{"/assests/flow-field-post/l-corridor-flow-field-1.jpg" | absolute_url}})
+
+to:
+
+![figure]({{"/assests/flow-field-post/l-corridor-flow-field-2.jpg" | absolute_url}})
 
 There are two issues with this method: first is finding an algorithm to generate these navigation regions,
 which must be ran up front before the simulation begins. The second is that you will only have an approximation
