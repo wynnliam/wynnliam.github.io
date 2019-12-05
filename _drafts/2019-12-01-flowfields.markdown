@@ -159,12 +159,11 @@ with a navigation mesh:
 
 ![figure]({{"/assests/flow-field-post/l-corridor-2.jpg" | absolute_url}})
 
-I’d like to interject with some history. I actually used a similar navigation mesh system like the one I
-detail here, but with A-star path finding. I did this with An Engine of Ice and Fire about [five years ago](https://github.com/wynnliam/an_engine_of_ice_and_fire).
-
 The walkable tiles are now colored according to the “navigation region” they are a part of. This partition
 was not arbitrary. First, all the regions are rectangles. This means that for any two tiles in the same
-rectangle, there is a direct path between them. Thus, you now have a guarantee that so long as your destination
+rectangle, there is a direct path between them.
+
+Thus, you now have a guarantee that so long as your destination
 is in the same region, you will not bump into any walls. Furthermore, there is a relationship between the
 rectangular regions: If you are to combine a region with one that is directly adjacent to it, they will form a
 rectangle. This is important because it gives us another guarantee: there is a direct path of travel between
@@ -225,7 +224,8 @@ I need to pick one of these pieces and break it in either two or three pieces, p
 Hopefully you can see now the regions are split such that they fulfill the guarantees we wanted
 with our navigation regions: every navigation region is a rectangle, and each region could be combined
 with any one of its neighbors to form a bigger rectangle. By having these constraints we ensure
-that each tile within a group  TODO: EMPHASIZE THE POWER OF THIS OPTIMIZATION
+that each tile within a region has a direct line of sight to each tile in an adjacent region.
+Thanks to this, we can do flow field generation on entire regions instead of one tile at a time.
 
 And that’s it for this post. I hope you found this useful. Please do checkout my project
 [Alexander](https://github.com/wynnliam/alexander) if you want to see this system in action.
