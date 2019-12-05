@@ -58,7 +58,7 @@ Click [here]({{"https://github.com/wynnliam/texture_generator" | absolute_url }}
 ---
 
 # Alexander
-Alexander is a on-going experiment in flock/boid behaviors, flow fields, and continuum crowds.
+Alexander is a on-going experiment in realtime AI simulations using flock/boid behaviors, flow fields, and continuum crowds.
 I want to simulate environments with large groups of agents moving around. This is created
 with the help of the Unity Engine, so collisions between agents work seamlessly. The best
 description is a neat little video:
