@@ -13,7 +13,7 @@ pathfinding, and a historical usage of flow fields in games. Finally, I will det
 meshes so that their generation is done quickly. Here is a simple video detailing what the result of all this looks likes:
 
 
-FLOW FIELD BOID SYSTEM IN ACTION
+[![Watch the video]({{ "/assests/flow-field-post/boid-demo.png" | absolute_url}} )]({{ "/assests/flow-field-post/boids-in-action.webm" | absolute_url }})
 
 
 Before we get started, I wanted to touch on a couple of things. This entire post is detailing the flock system used in my project
