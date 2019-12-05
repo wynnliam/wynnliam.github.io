@@ -57,6 +57,17 @@ Click [here]({{"https://github.com/wynnliam/texture_generator" | absolute_url }}
 
 ---
 
+# Alexander
+Alexander is a on-going experiment in flock/boid behaviors, flow fields, and continuum crowds.
+I want to simulate environments with large groups of agents moving around. This is created
+with the help of the Unity Engine, so collisions between agents work seamlessly. The best
+description is a neat little video:
+
+[![Watch the video]({{ "/assests/flow-field-post/boid-demo.png" | absolute_url}} )]({{ "/assests/flow-field-post/boids-in-action.webm" | absolute_url }})
+(Click to watch video)
+
+Click [here](https://github.com/wynnliam/alexander) to get it.
+
 
 # Blazonry Parser
 The Blazonry Parser is an experiment in language theory and functional programming.
