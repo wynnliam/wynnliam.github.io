@@ -160,8 +160,16 @@ with a navigation mesh:
 ![figure]({{"/assests/flow-field-post/l-corridor-2.jpg" | absolute_url}})
 
 The walkable tiles are now colored according to the “navigation region” they are a part of. This partition
-was not arbitrary. First, all the regions are rectangles. This means that for any two tiles in the same
-rectangle, there is a direct path between them.
+was not arbitrary. All the regions are rectangles. This means each of these regions is [convex](https://en.wikipedia.org/wiki/Convex_polygon).
+In other words: take any two points within the rectangle, and there is a line between them that does not intersect a wall.
+This is what we call a "direct line of sight":
+
+![figure]({{"/assests/flow-field-post/los.jpg" | absolute_url}})
+
+Yes, this is a contrived example, but it gets the point across. The white tiles are all in the same rectangular region, and the grey ones
+are walls. The red line is an example of "direct line of sight". The top left tile and the bottom right tile have a line that goes directly
+between them that does not intersect any grey walls. What is the implication of this? It means there is a steering forces that will
+push you from one of these tiles straight to the next without hitting any walls.
 
 Thus, you now have a guarantee that so long as your destination
 is in the same region, you will not bump into any walls. Furthermore, there is a relationship between the
