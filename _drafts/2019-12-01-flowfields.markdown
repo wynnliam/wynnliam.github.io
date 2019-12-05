@@ -8,8 +8,8 @@ categories: alexander
 Hello all! It’s been about three months since my last post, so I figured I would do one on my latest AI project: Flow Fields.
 
 This post will begin with a brief overview of steering forces and flock systems, as these are crucial to understanding flow fields.
-Next, we will go into flow fields proper: how they are created for pathfinding, why you want to use them as opposed to say A-star
-pathfinding, and a historical usage of flow fields in games. Finally, I will detail how you can optimize flow fields with navigation
+Next, we will go into flow fields proper: how they are created for pathfinding and why you want to use them as opposed to say A-star
+pathfinding. Finally, I will detail how you can optimize flow fields with navigation
 meshes so that their generation is done quickly. Here is a simple video detailing what the result of all this looks likes:
 
 
