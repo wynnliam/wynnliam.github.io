@@ -68,6 +68,16 @@ description is a neat little video:
 
 Click [here](https://github.com/wynnliam/alexander) to get it.
 
+# Multi-User Painting Program
+My Multi-User Painting program (informally called MUP) is a simple web application, and experiment in software deployment.
+Basically, multiple users can connect to the app and work on a shared canvas to paint. The application uses an Express
+server with Socket.io to do real time networking.
+
+It also uses Docker so you can run the application in a container. This allows you to deploy it in almost any environment
+with very little overhead. I also was able to deploy it on an AWS EC2 microserver. This is a great exercise in modern software
+engineering.
+
+Click [here](https://github.com/wynnliam/paint) to get it.
 
 # Blazonry Parser
 The Blazonry Parser is an experiment in language theory and functional programming.
