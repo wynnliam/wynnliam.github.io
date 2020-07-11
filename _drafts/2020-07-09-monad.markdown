@@ -1,0 +1,170 @@
+---
+layout: post
+title: "Introduction to the Monad"
+date: 2020-07-09 4:00:00 +0000
+categories: intro-to-the-monad
+---
+
+Hello everyone. Today I would like to discuss the Monad. If you came here thinking this would
+be about Neo-platonism, I'm afraid you are going to be disappointed. However, we are talking
+functional programming, which is very cool! So please stick around anyway.
+
+I want to warn you about two things. One, I will be using Haskell for many of my examples. I will
+try my best to explain them, but I can't say I'll do a perfect job. Also, I am not an expert on
+anything I am about to discuss. While I enjoy writing Haskell programs, I am far from an expert.
+
+Finally, most of my knowledge is from the following resources. Please check them out:
+
+* A video
+* A paper
+* Another video
+
+To understand the monad properly, there are a few prelimiaries we will need to discuss. Broadly
+speaking, this article will go in the following order:
+
+* First we will discuss function composition (the kind you learned in high school) and how this
+is used to execute steps in a functional program.
+
+* Next we will discuss Haskell's rule on variable immutability. As the name implies, variables
+cannot mutate once they are assigned a value. We will discuss relevant implications of this rule.
+
+* With these two ideas covered, we will finally discuss the Monad itself. I will step through
+an example for computing arthemtic statements and printing the final result.
+
+Hopefully, you will appreciate this profoundly elegant design pattern by the end of this article.
+With all of this out of the way, let's begin!
+
+## Part 1: Function Composition and its Relation to Functional Programming
+It turns out, you're probably already a certified Haskell programmer! Do you recall function composition from
+high school algebra? Something like this:
+
+```
+f(x) = x + 3
+g(x) = x * x
+
+f(g(x)) = f(x * x) = (x * x) + 3
+```
+
+In principle, this is how Haskell (and many other functional languages) do computational steps in a program.
+A snippit of Haskell code to do the above might look like this:
+
+```
+f :: Int -> Int -- This line says "f is a function that takes an Int and returns an Int
+f x = x + 3
+
+g :: Int -> Int
+g x = x * x
+```
+
+Then you'd compose your functions like this:
+
+```
+f (g 3)
+```
+
+Of course, this is a very contrived example, but hopefully it gives you an intuition for how one might express
+programs in Haskell. Don't worry, we'll cover a more practical example shortly. But I want to emphasize
+that in Haskell: computation steps are done with compositions of functions applied to variables.
+
+## Part 2: Variable Immutability and Equational Reasoning
+Next, I want to discuss variable immutability in Haskell. Okay, variable immutability comes up in other
+functional languages, but I'm going to keep the discussion contained to Haskell. Consider the following
+statement:
+
+```
+x = 5
+```
+
+In C++, you could read this as "Give variable x the value 5". In Haskell, you are saying "x and 5 are the same".
+You cannot change x to be another value. It is set in stone. For the longest time, I thought this was just stripping
+your language of a vital feature: we use variable immutability everywhere!
+
+On the other hand, there are tons of benefits to having immutabile variables. If nothing else, recall all the errors
+in your code born from changing a variable you shouldn't have. Every single one of those bugs will cease to be!
+
+More relevant to monads, variable immutability gives us immense power: equational reasoning. Equational reasoning
+is the idea that you can [substitue equal expressions for equal expressions](http://www.haskellforall.com/2013/12/equational-reasoning.html).
+In Haskell, we do our computation steps by substituting equal expressions and then simplifying. Earlier, I said you
+are already a certified Haskell programmer if you got through high school algebra - because you've been writing and
+executing Haskell programs by hand!
+
+Let's go back to the example we had above, that uses f and g:
+
+```
+f :: Int -> Int
+f x = x + 3
+
+g :: Int -> Int
+g x = x * x
+```
+
+Now suppose I want Haskell to evaluate the following expression:
+
+```
+let x = 3 in
+  f (g x)
+```
+
+(The "let" clause is [valid Haskell](http://learnyouahaskell.com/syntax-in-functions#let-it-be)
+Haskell will evaluate this with a series of substitutions. The above becomes:
+
+```
+let x = 3 in
+  f (x * x)
+```
+
+Which becomes:
+
+```
+let x = 3 in
+  (x * x) + 3
+```
+
+Which becomes:
+
+```
+3 * 3 + 3
+```
+Which gives us 12. Notice that I've evaluated this Haskell code by hand in the same
+way we did algebra in high school. All in all, variable immutability allows us to
+reason about our code with very little machinery needed.
+
+As a corollary to this, functions always return the same output given the same input.
+This allows us to reason about our code even more. Never again will you have to worry
+about some function mutating a random variable and then breaking your program.
+
+## Part 3: "Limitations" on Variable Immutability
+So what if you want to do something that wasn't simple arithmetic? How about reading
+a string from the command line? In Haskell, we read user input with a function
+like `getLine`. You can think of this as a function that takes no variable and returns
+a string. The type signature, that funny statement like `f :: Int -> Int`, might look
+like:
+
+```
+getLine :: String
+```
+
+Where we nix the arrow because we aren't taking any input.
+
+However, if I give it "nothing" and I get back a string, the last section would have
+you believe you should get the same string back. But it doesn't!
+
+Or what about writing to the screen. Haskell has functions for that too like `putStr`, which
+puts a string on the screen. That is, it takes a String, writes it the output, and then returns
+nothing. That might look like:
+
+```
+putStr :: String -> ()
+```
+
+Where `()` means "nothing". This one is a little less problematic because we return nothing on every
+input. But how does it print to the screen?
+
+Clearly, to do these things, we need more!
+
+## Part 4: The Monad
+We'll bring everything we've discussed together now. We can solve the problems from the last section
+with an elegant thing called the Monad. The Monad is a design pattern for expressing how to do steps
+of computation. In other words, it's "fancier function composition".
+
+## Part 5: A Simple Arithmetic Calculator Using Monads
