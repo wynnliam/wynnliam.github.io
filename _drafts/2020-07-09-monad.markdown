@@ -133,8 +133,11 @@ way we did algebra in high school. All in all, variable immutability allows us t
 reason about our code with very little machinery needed.
 
 As a corollary to this, functions always return the same output given the same input.
+In Haskell, we call this "function purity", and it means that *functions have no side-effects*.
 This allows us to reason about our code even more. Never again will you have to worry
 about some function mutating a random variable and then breaking your program.
+
+(Actually we will see how we can break this rule using Monads).
 
 ## Part 3: "Limitations" on Variable Immutability
 So what if you want to do something that wasn't simple arithmetic? How about reading
@@ -160,5 +163,25 @@ Clearly, we need some more powerful machinery to express more complicated progra
 We'll bring everything we've discussed together now. We can solve the problems from the last section
 with an elegant thing called the Monad. The Monad is a design pattern for expressing how to do steps
 of computation. In other words, it's "fancier function composition".
+
+Earlier I said the `getLine`
+function had a type signature like `getLine :: String`. This is not quite the case. Rather, it looks
+like this: `getLine:: IO String`. That funny "IO" there is a monad. There are many kinds of monads.
+The IO monad implements "fancy function composition" for IO operations. I'll explain what "fancy function
+composition" is concretely, but first I want to talk about what the difference between "String" and "IO String"
+is.
+
+### Monads do computations on embellished types
+The type signature for `getLine` says it returns not just a String, but an "IO String". This is an example
+of an "embellished" type. All monads do computations on such embellished types. Embelleshed types have
+the form `M a` where "a" is a "concrete" type (something like Int, String, Bool, etc.), and "M" specifies
+a Monad of some kind. For different monads, what it means to be embellished will mean different things.
+Typically thought it allows us to defy "function purity" safely. By specifying a value is "embellished",
+we effectively quanantine it from the pure code, and now we can do all kinds of mutations and changes to
+that value without breaking it.
+
+
+### Monads implement "fancier function composition"
+As I said before, the monad is a design pattern for expressing *how* to do steps.
 
 ## Part ?: A Simple Arithmetic Calculator Using Monads
