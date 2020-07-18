@@ -11,7 +11,9 @@ functional programming, which is very cool! So please stick around anyway.
 
 I want to warn you about two things. One, I will be using Haskell for many of my examples. I will
 try my best to explain them, but I can't say I'll do a perfect job. Also, I am not an expert on
-anything I am about to discuss. While I enjoy writing Haskell programs, I am far from an expert.
+anything I am about to discuss. While I enjoy writing Haskell programs, I am no doubt going to
+get things wrong here. If I omit key information, please reach out to me, and I will do my best
+to fix it.
 
 Finally, most of my knowledge is from the following resources. Please check them out:
 
