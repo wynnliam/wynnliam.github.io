@@ -6,7 +6,7 @@ categories: intro-to-the-monad
 ---
 
 Hello everyone. Today I would like to discuss the Monad. If you came here thinking this would
-be about Neo-platonism, I'm afraid you are going to be disappointed. However, we are talking
+be about neoplatonism, I'm afraid you are going to be disappointed. However, we are talking
 functional programming, which is very cool! So please stick around anyway.
 
 I want to warn you about two things. One, I will be using Haskell for many of my examples. I will
@@ -176,12 +176,34 @@ The type signature for `getLine` says it returns not just a String, but an "IO S
 of an "embellished" type. All monads do computations on such embellished types. Embelleshed types have
 the form `M a` where "a" is a "concrete" type (something like Int, String, Bool, etc.), and "M" specifies
 a Monad of some kind. For different monads, what it means to be embellished will mean different things.
-Typically thought it allows us to defy "function purity" safely. By specifying a value is "embellished",
-we effectively quanantine it from the pure code, and now we can do all kinds of mutations and changes to
+Typically though it allows us to defy "function purity" safely. By specifying a value is "embellished",
+we effectively separating it from the pure code, and now we can do all kinds of mutations and changes to
 that value without breaking it.
 
+In actuallity, the form `M a` can be read as "A computation done on, or with, a value of type a. So
+going back to `getLine`, which gives us an `IO String`, we can say that "getLine does some kind of IO
+operation that results in a String".
 
-### Monads implement "fancier function composition"
-As I said before, the monad is a design pattern for expressing *how* to do steps.
+
+### How is a monad implemented?
+At this point, we've seen what kinds of types monads operate on. Monads do work on an embellished type.
+"Embellished" just means that we are doing some kind of computation on a concrete type. So the question
+remains: how do we actually implement monads?
+
+As I said before, the monad is a design pattern for expressing *how* to do steps. That is, we express
+how one composes a function. This is what I called "fancier function composition". In regular function
+composition, we apply one function to a variable, then apply another to the result. Fancier function
+composition is the same, but we can do other things like print values, throw exceptions, read inputs,
+and so on.
+
+If we want to implement our own monad, we need to implement two functions:
+
+* `return`
+* `bind`
+
+In this section, I need to explain:
+	* `return`
+	* `bind`
+
 
 ## Part ?: A Simple Arithmetic Calculator Using Monads
