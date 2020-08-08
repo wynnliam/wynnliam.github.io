@@ -201,9 +201,4 @@ If we want to implement our own monad, we need to implement two functions:
 * `return`
 * `bind`
 
-In this section, I need to explain:
-	* `return`
-	* `bind`
-
-
 ## Part ?: A Simple Arithmetic Calculator Using Monads
